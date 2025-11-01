@@ -34,19 +34,19 @@ flutter:
 flutter_launcher_icons:
   android: true
   ios: true
-  image_path: "assets/icons/app_icon.png"
-  adaptive_icon_background: "#9C27B0"
-  adaptive_icon_foreground: "assets/icons/app_icon_foreground.png"
+  image_path: "assets/icons/logo_presty.png"
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "assets/icons/logo_foreground.png"
 
 # Native Splash Screen Configuration
 flutter_native_splash:
-  color: "#9C27B0"
-  image: assets/images/splash_icon.png
+  color: "#FFFFFF"
+  image: assets/images/logo_splash.png
   color_dark: "#1A1A1A"
-  image_dark: assets/images/splash_icon.png
+  image_dark: assets/images/logo_splash.png
   android_12:
-    icon_background_color: "#9C27B0"
-    image: assets/images/splash_icon.png
+    icon_background_color: "#FFFFFF"
+    image: assets/images/logo_splash.png
   android: true
-  ios: true
+  ios: false
   web: false

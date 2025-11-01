@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "159780643071",
+    "project_id": "pesty-5f5a5",
+    "storage_bucket": "pesty-5f5a5.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:159780643071:android:255a25599b1465c65a2cca",
+        "android_client_info": {
+          "package_name": "com.example.petsy_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBktMrmnbG16MzXODZUaLqmAKoEaNtDutU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:159780643071:android:dc57720f67977c635a2cca",
+        "android_client_info": {
+          "package_name": "com.pesty.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBktMrmnbG16MzXODZUaLqmAKoEaNtDutU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

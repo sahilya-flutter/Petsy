@@ -1,4 +1,5 @@
 abstract class AppRoutes {
+  static const SPLASH = '/';
   static const SIGNIN = '/signin';
   static const SIGNUP = '/signup';
   static const HOME = '/home';

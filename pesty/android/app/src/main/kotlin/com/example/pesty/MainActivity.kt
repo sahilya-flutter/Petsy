@@ -1,4 +1,4 @@
-package com.example.pesty
+package com.pesty.app
 
 import io.flutter.embedding.android.FlutterActivity
 
