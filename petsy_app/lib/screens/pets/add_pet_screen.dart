@@ -1,4 +1,3 @@
-// Add Pet screen
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
@@ -10,9 +9,9 @@ class AddPetScreen extends StatelessWidget {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController breedController = TextEditingController();
 
-  final RxString selectedSpecies = 'Dog'.obs;
-  final RxString selectedGender = 'Male'.obs;
-  final Rx<DateTime> selectedBirthday = DateTime.now().obs;
+  final RxString selectedSpecies = ''.obs;
+  final RxString selectedGender = ''.obs;
+  final Rx<DateTime?> selectedBirthday = Rx<DateTime?>(null);
 
   final List<String> speciesList = [
     'Dog',
@@ -20,249 +19,197 @@ class AddPetScreen extends StatelessWidget {
     'Bird',
     'Rabbit',
     'Fish',
+    'Hamster',
     'Other',
   ];
   final List<String> genderList = ['Male', 'Female'];
 
+  AddPetScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
+
+      // 🔹 Book Appointment style AppBar
       appBar: AppBar(
-        backgroundColor: Color(0xFF7B2CBF),
+        backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Get.back(),
         ),
         title: Text(
-          'Add Pet',
+          'Add Your Pet',
           style: TextStyle(
-            fontSize: 18.sp,
+            color: Colors.black,
             fontWeight: FontWeight.bold,
-            color: Colors.white,
+            fontSize: 16.sp,
           ),
         ),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.menu, color: Colors.black),
+            onPressed: () {},
+          ),
+        ],
       ),
+
+      // 🔹 Main Body
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(5.w),
+        padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Pet Icon
+            SizedBox(height: 1.h),
+
+            // 🐾 Icon
             Center(
               child: Container(
-                padding: EdgeInsets.all(6.w),
+                width: 24.w,
+                height: 24.w,
                 decoration: BoxDecoration(
-                  color: Color(0xFF7B2CBF).withOpacity(0.1),
+                  color: const Color(0xFFE8DEF8),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(Icons.pets, size: 50.sp, color: Color(0xFF7B2CBF)),
+                child: Icon(
+                  Icons.pets,
+                  size: 50.sp,
+                  color: const Color(0xFF6750A4),
+                ),
               ),
             ),
-            SizedBox(height: 4.h),
 
-            // Pet Name
-            Text(
-              'Pet Name',
-              style: TextStyle(
-                fontSize: 12.sp,
-                fontWeight: FontWeight.w600,
-                color: Colors.black87,
+            SizedBox(height: 2.h),
+
+            // 📋 Heading
+            Center(
+              child: Text(
+                'Enter Your Pet Details',
+                style: TextStyle(
+                  fontSize: 13.sp,
+                  color: Colors.black87,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
+            SizedBox(height: 2.h),
+
+            // 🐶 Pet Name
+            _buildLabel('Pet Name'),
             SizedBox(height: 1.h),
-            TextField(
+            _buildTextField(
               controller: nameController,
-              decoration: InputDecoration(
-                hintText: 'Enter pet name',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(color: Colors.grey[300]!),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(color: Colors.grey[300]!),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(color: Color(0xFF7B2CBF)),
-                ),
-                contentPadding: EdgeInsets.symmetric(
-                  horizontal: 4.w,
-                  vertical: 2.h,
-                ),
-              ),
+              hintText: 'Enter pet name',
             ),
-            SizedBox(height: 2.h),
 
-            // Pet Species
-            Text(
-              'Pet Species',
-              style: TextStyle(
-                fontSize: 12.sp,
-                fontWeight: FontWeight.w600,
-                color: Colors.black87,
-              ),
-            ),
+            SizedBox(height: 2.5.h),
+
+            // 🐕 Pet Species
+            _buildLabel('Pet Species'),
             SizedBox(height: 1.h),
             Obx(
-              () => Container(
-                padding: EdgeInsets.symmetric(horizontal: 4.w),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey[300]!),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: DropdownButton<String>(
-                  value: selectedSpecies.value,
-                  isExpanded: true,
-                  underline: SizedBox(),
-                  items: speciesList.map((String species) {
-                    return DropdownMenuItem<String>(
-                      value: species,
-                      child: Text(species),
-                    );
-                  }).toList(),
-                  onChanged: (String? newValue) {
-                    if (newValue != null) {
-                      selectedSpecies.value = newValue;
-                    }
-                  },
-                ),
+              () => _buildDropdown(
+                hint: 'Select species',
+                items: speciesList,
+                selectedValue: selectedSpecies.value,
+                onChanged: (val) => selectedSpecies.value = val,
               ),
             ),
-            SizedBox(height: 2.h),
 
-            // Pet Breed
-            Text(
-              'Pet Breed',
-              style: TextStyle(
-                fontSize: 12.sp,
-                fontWeight: FontWeight.w600,
-                color: Colors.black87,
-              ),
-            ),
+            SizedBox(height: 1.5.h),
+
+            // 🐩 Pet Breed
+            _buildLabel('Pet Breed'),
             SizedBox(height: 1.h),
-            TextField(
+            _buildTextField(
               controller: breedController,
-              decoration: InputDecoration(
-                hintText: 'Enter pet breed',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(color: Colors.grey[300]!),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(color: Colors.grey[300]!),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(color: Color(0xFF7B2CBF)),
-                ),
-                contentPadding: EdgeInsets.symmetric(
-                  horizontal: 4.w,
-                  vertical: 2.h,
-                ),
-              ),
+              hintText: 'Enter breed',
             ),
-            SizedBox(height: 2.h),
 
-            // Pet Gender
-            Text(
-              'Pet Gender',
-              style: TextStyle(
-                fontSize: 12.sp,
-                fontWeight: FontWeight.w600,
-                color: Colors.black87,
-              ),
-            ),
+            SizedBox(height: 1.5.h),
+
+            // 🧬 Gender
+            _buildLabel('Pet Gender'),
             SizedBox(height: 1.h),
             Obx(
-              () => Container(
-                padding: EdgeInsets.symmetric(horizontal: 4.w),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey[300]!),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: DropdownButton<String>(
-                  value: selectedGender.value,
-                  isExpanded: true,
-                  underline: SizedBox(),
-                  items: genderList.map((String gender) {
-                    return DropdownMenuItem<String>(
-                      value: gender,
-                      child: Text(gender),
-                    );
-                  }).toList(),
-                  onChanged: (String? newValue) {
-                    if (newValue != null) {
-                      selectedGender.value = newValue;
-                    }
-                  },
-                ),
+              () => _buildDropdown(
+                hint: 'Select gender',
+                items: genderList,
+                selectedValue: selectedGender.value,
+                onChanged: (val) => selectedGender.value = val,
               ),
             ),
-            SizedBox(height: 2.h),
 
-            // Pet Birthday
-            Text(
-              "Select Pet's Birthday",
-              style: TextStyle(
-                fontSize: 12.sp,
-                fontWeight: FontWeight.w600,
-                color: Colors.black87,
-              ),
-            ),
+            SizedBox(height: 1.5.h),
+
+            // 🎂 Birthday
+            _buildLabel("Pet's Birthday"),
             SizedBox(height: 1.h),
             Obx(
               () => InkWell(
                 onTap: () async {
-                  final DateTime? picked = await showDatePicker(
+                  final picked = await showDatePicker(
                     context: context,
-                    initialDate: selectedBirthday.value,
+                    initialDate: selectedBirthday.value ?? DateTime.now(),
                     firstDate: DateTime(2000),
                     lastDate: DateTime.now(),
                     builder: (context, child) {
                       return Theme(
                         data: Theme.of(context).copyWith(
-                          colorScheme: ColorScheme.light(
-                            primary: Color(0xFF7B2CBF),
+                          colorScheme: const ColorScheme.light(
+                            primary: Color(0xFF6750A4),
+                            onPrimary: Colors.white,
+                            onSurface: Colors.black,
                           ),
                         ),
                         child: child!,
                       );
                     },
                   );
-                  if (picked != null) {
-                    selectedBirthday.value = picked;
-                  }
+                  if (picked != null) selectedBirthday.value = picked;
                 },
                 child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 4.w,
+                    vertical: 1.8.h,
+                  ),
                   decoration: BoxDecoration(
+                    color: Colors.grey[50],
+                    borderRadius: BorderRadius.circular(8),
                     border: Border.all(color: Colors.grey[300]!),
-                    borderRadius: BorderRadius.circular(10),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        DateFormat(
-                          'dd MMM yyyy',
-                        ).format(selectedBirthday.value),
+                        selectedBirthday.value == null
+                            ? 'Select date'
+                            : DateFormat(
+                                'dd MMM yyyy',
+                              ).format(selectedBirthday.value!),
                         style: TextStyle(
-                          fontSize: 12.sp,
-                          color: Colors.black87,
+                          fontSize: 12.5.sp,
+                          color: selectedBirthday.value == null
+                              ? Colors.grey[400]
+                              : Colors.black87,
                         ),
                       ),
-                      Icon(Icons.calendar_today, color: Color(0xFF7B2CBF)),
+                      Icon(
+                        Icons.calendar_today_outlined,
+                        size: 18.sp,
+                        color: Colors.grey[600],
+                      ),
                     ],
                   ),
                 ),
               ),
             ),
-            SizedBox(height: 4.h),
 
-            // Next Button
+            SizedBox(height: 3.h),
+
+            // 🔘 Next Button
             Obx(
               () => SizedBox(
                 width: double.infinity,
@@ -271,45 +218,140 @@ class AddPetScreen extends StatelessWidget {
                   onPressed: petController.isLoading.value
                       ? null
                       : () {
-                          if (nameController.text.isNotEmpty &&
-                              breedController.text.isNotEmpty) {
-                            petController.addPet(
-                              name: nameController.text,
-                              species: selectedSpecies.value,
-                              breed: breedController.text,
-                              gender: selectedGender.value,
-                              birthday: DateFormat(
-                                'yyyy-MM-dd',
-                              ).format(selectedBirthday.value),
-                            );
-                          } else {
+                          if (nameController.text.isEmpty ||
+                              breedController.text.isEmpty ||
+                              selectedSpecies.value.isEmpty ||
+                              selectedGender.value.isEmpty ||
+                              selectedBirthday.value == null) {
                             Get.snackbar(
                               'Error',
                               'Please fill all fields',
                               snackPosition: SnackPosition.BOTTOM,
+                              backgroundColor: Colors.redAccent,
+                              colorText: Colors.white,
                             );
+                            return;
                           }
+
+                          petController.addPet(
+                            name: nameController.text,
+                            species: selectedSpecies.value,
+                            breed: breedController.text,
+                            gender: selectedGender.value,
+                            birthday: DateFormat(
+                              'yyyy-MM-dd',
+                            ).format(selectedBirthday.value!),
+                          );
+
+                          Get.snackbar(
+                            'Pet Added',
+                            'Your pet has been added successfully!',
+                            snackPosition: SnackPosition.BOTTOM,
+                            backgroundColor: const Color(
+                              0xFF00BFA6,
+                            ).withOpacity(0.9),
+                            colorText: Colors.white,
+                          );
                         },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF7B2CBF),
+                    backgroundColor: const Color(0xFF00BFA6),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(100),
                     ),
+                    elevation: 0,
                   ),
                   child: petController.isLoading.value
-                      ? CircularProgressIndicator(color: Colors.white)
+                      ? const CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2,
+                        )
                       : Text(
                           'Next',
                           style: TextStyle(
                             fontSize: 14.sp,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                 ),
               ),
             ),
+
+            SizedBox(height: 1.h),
           ],
+        ),
+      ),
+    );
+  }
+
+  // 🔹 Reusable Label Widget
+  Widget _buildLabel(String text) {
+    return Text(
+      text,
+      style: TextStyle(
+        fontSize: 13.sp,
+        fontWeight: FontWeight.w600,
+        color: Colors.black87,
+      ),
+    );
+  }
+
+  // 🔹 Reusable TextField
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String hintText,
+  }) {
+    return TextField(
+      controller: controller,
+      style: TextStyle(fontSize: 13.sp),
+      decoration: InputDecoration(
+        hintText: hintText,
+        hintStyle: TextStyle(color: Colors.grey[400]),
+        filled: true,
+        fillColor: Colors.grey[50],
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(color: Colors.grey[300]!),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(color: Colors.grey[300]!),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(color: Color(0xFF6750A4), width: 2),
+        ),
+        contentPadding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.8.h),
+      ),
+    );
+  }
+
+  // 🔹 Reusable Dropdown
+  Widget _buildDropdown({
+    required String hint,
+    required List<String> items,
+    required String selectedValue,
+    required Function(String) onChanged,
+  }) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 4.w),
+      decoration: BoxDecoration(
+        color: Colors.grey[50],
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.grey[300]!),
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<String>(
+          value: selectedValue.isEmpty ? null : selectedValue,
+          hint: Text(hint, style: TextStyle(color: Colors.grey[400])),
+          isExpanded: true,
+          icon: Icon(Icons.keyboard_arrow_down, color: Colors.grey[600]),
+          items: items.map((val) {
+            return DropdownMenuItem(
+              value: val,
+              child: Text(val, style: TextStyle(fontSize: 13.sp)),
+            );
+          }).toList(),
+          onChanged: (val) => onChanged(val!),
         ),
       ),
     );

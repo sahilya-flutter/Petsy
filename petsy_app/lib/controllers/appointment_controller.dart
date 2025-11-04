@@ -20,7 +20,7 @@ class AppointmentController extends GetxController {
   Future<void> loadAppointments() async {
     try {
       isLoading.value = true;
-      final userId = authController.firebaseUser.value?.uid;
+      final userId = authController.currentUser.value?.uid;
       if (userId != null) {
         final appointmentsList = await _dbHelper.getAppointments(userId);
         appointments.value = appointmentsList;
@@ -47,7 +47,7 @@ class AppointmentController extends GetxController {
   }) async {
     try {
       isLoading.value = true;
-      final userId = authController.firebaseUser.value?.uid;
+      final userId = authController.currentUser.value?.uid;
 
       if (userId != null) {
         await _dbHelper.insertAppointment({
@@ -88,7 +88,7 @@ class AppointmentController extends GetxController {
 
   Future<void> deleteAppointment(int appointmentId) async {
     try {
-      await _dbHelper.deleteAppointment(appointmentId);
+      await _dbHelper.deleteAppointment(appointmentId as String);
       Get.snackbar(
         'Success',
         'Appointment deleted successfully',

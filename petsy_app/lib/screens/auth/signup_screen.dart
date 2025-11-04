@@ -1,4 +1,3 @@
-// Signup screen
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
@@ -18,83 +17,100 @@ class SignUpScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Get.back(),
-        ),
-      ),
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: EdgeInsets.all(5.w),
+          padding: EdgeInsets.symmetric(horizontal: 6.w),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              SizedBox(height: 6.h),
+
+              // Logo/Icon section
               Center(
-                child: Icon(Icons.pets, size: 50.sp, color: Color(0xFF7B2CBF)),
-              ),
-              SizedBox(height: 2.h),
-              Center(
-                child: Text(
-                  'Sign Up',
-                  style: TextStyle(
-                    fontSize: 28.sp,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
+                child: Container(
+                  width: 22.w,
+                  height: 22.w,
+                  decoration: BoxDecoration(
+                    color: Color(0xFFFFFFFF),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Image.asset(
+                    'assets/images/logo_splash.png',
+                    fit: BoxFit.contain,
                   ),
                 ),
               ),
-              SizedBox(height: 1.h),
-              Center(
-                child: Text(
-                  'Create your account',
-                  style: TextStyle(fontSize: 12.sp, color: Colors.grey[600]),
-                ),
-              ),
+
               SizedBox(height: 4.h),
 
-              // Full Name Field
-              Text(
-                'Full Name',
-                style: TextStyle(
-                  fontSize: 12.sp,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black87,
-                ),
+              // Sign In / Sign Up tabs
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  GestureDetector(
+                    onTap: () => Get.back(),
+                    child: Column(
+                      children: [
+                        Text(
+                          'Sign In',
+                          style: TextStyle(
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                        SizedBox(height: 0.5.h),
+                        Container(
+                          height: 3,
+                          width: 20.w,
+                          color: Colors.transparent,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 12.0),
+                    child: Text(
+                      '|',
+                      style: TextStyle(fontSize: 24, color: Colors.grey),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {},
+                    child: Column(
+                      children: [
+                        Text(
+                          'Sign Up',
+                          style: TextStyle(
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFFFF9800),
+                          ),
+                        ),
+                        SizedBox(height: 0.5.h),
+                        Container(
+                          height: 3,
+                          width: 20.w,
+                          decoration: BoxDecoration(
+                            color: Color(0xFFFF9800),
+                            borderRadius: BorderRadius.circular(2),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-              SizedBox(height: 1.h),
-              TextField(
-                controller: fullNameController,
-                decoration: InputDecoration(
-                  hintText: 'Enter your full name',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(color: Colors.grey[300]!),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(color: Colors.grey[300]!),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(color: Color(0xFF7B2CBF)),
-                  ),
-                  contentPadding: EdgeInsets.symmetric(
-                    horizontal: 4.w,
-                    vertical: 2.h,
-                  ),
-                ),
-              ),
-              SizedBox(height: 2.h),
 
-              // Email Field
+              SizedBox(height: 4.h),
+
+              // E-mail field
               Text(
                 'E-mail',
                 style: TextStyle(
-                  fontSize: 12.sp,
-                  fontWeight: FontWeight.w600,
+                  fontSize: 13.sp,
+                  fontWeight: FontWeight.w500,
                   color: Colors.black87,
                 ),
               ),
@@ -102,90 +118,78 @@ class SignUpScreen extends StatelessWidget {
               TextField(
                 controller: emailController,
                 keyboardType: TextInputType.emailAddress,
+                style: TextStyle(fontSize: 13.sp),
                 decoration: InputDecoration(
                   hintText: 'name@example.com',
+                  hintStyle: TextStyle(color: Colors.grey[400]),
+                  filled: true,
+                  fillColor: Colors.grey[50],
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(color: Colors.grey[300]!),
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(color: Colors.grey[300]!, width: 1),
                   ),
                   enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(color: Colors.grey[300]!),
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(color: Colors.grey[300]!, width: 1),
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(color: Color(0xFF7B2CBF)),
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(color: Color(0xFF000000), width: 2),
                   ),
                   contentPadding: EdgeInsets.symmetric(
                     horizontal: 4.w,
-                    vertical: 2.h,
+                    vertical: 1.8.h,
                   ),
                 ),
               ),
+
               SizedBox(height: 2.h),
 
-              // Phone Number Field
+              // Full Name field
               Text(
-                'Phone Number',
+                'Full Name',
                 style: TextStyle(
-                  fontSize: 12.sp,
-                  fontWeight: FontWeight.w600,
+                  fontSize: 13.sp,
+                  fontWeight: FontWeight.w500,
                   color: Colors.black87,
                 ),
               ),
               SizedBox(height: 1.h),
-              Row(
-                children: [
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 3.w,
-                      vertical: 2.h,
-                    ),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey[300]!),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Text(
-                      '+974',
-                      style: TextStyle(fontSize: 12.sp, color: Colors.black87),
-                    ),
+              TextField(
+                controller: fullNameController,
+                style: TextStyle(fontSize: 13.sp),
+                decoration: InputDecoration(
+                  hintText: 'Enter your full name',
+                  hintStyle: TextStyle(color: Colors.grey[400]),
+                  filled: true,
+                  fillColor: Colors.grey[50],
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(color: Colors.grey[300]!, width: 1),
                   ),
-                  SizedBox(width: 2.w),
-                  Expanded(
-                    child: TextField(
-                      controller: phoneController,
-                      keyboardType: TextInputType.phone,
-                      decoration: InputDecoration(
-                        hintText: 'Phone Number',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(color: Colors.grey[300]!),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(color: Colors.grey[300]!),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(color: Color(0xFF7B2CBF)),
-                        ),
-                        contentPadding: EdgeInsets.symmetric(
-                          horizontal: 4.w,
-                          vertical: 2.h,
-                        ),
-                      ),
-                    ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(color: Colors.grey[300]!, width: 1),
                   ),
-                ],
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(color: Color(0xFF000000), width: 2),
+                  ),
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: 4.w,
+                    vertical: 1.8.h,
+                  ),
+                ),
               ),
+
               SizedBox(height: 2.h),
 
-              // Password Field
+              // Password field
               Text(
                 'Password',
                 style: TextStyle(
-                  fontSize: 12.sp,
-                  fontWeight: FontWeight.w600,
+                  fontSize: 13.sp,
+                  fontWeight: FontWeight.w500,
                   color: Colors.black87,
                 ),
               ),
@@ -194,30 +198,47 @@ class SignUpScreen extends StatelessWidget {
                 () => TextField(
                   controller: passwordController,
                   obscureText: !isPasswordVisible.value,
+                  style: TextStyle(fontSize: 13.sp),
                   decoration: InputDecoration(
                     hintText: '............',
+                    hintStyle: TextStyle(
+                      color: Colors.grey[400],
+                      letterSpacing: 3,
+                    ),
+                    filled: true,
+                    fillColor: Colors.grey[50],
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(color: Colors.grey[300]!),
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(
+                        color: Colors.grey[300]!,
+                        width: 1,
+                      ),
                     ),
                     enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(color: Colors.grey[300]!),
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(
+                        color: Colors.grey[300]!,
+                        width: 1,
+                      ),
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(color: Color(0xFF7B2CBF)),
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(
+                        color: Color(0xFF000000),
+                        width: 2,
+                      ),
                     ),
                     contentPadding: EdgeInsets.symmetric(
                       horizontal: 4.w,
-                      vertical: 2.h,
+                      vertical: 1.8.h,
                     ),
                     suffixIcon: IconButton(
                       icon: Icon(
                         isPasswordVisible.value
-                            ? Icons.visibility
-                            : Icons.visibility_off,
+                            ? Icons.visibility_outlined
+                            : Icons.visibility_off_outlined,
                         color: Colors.grey[600],
+                        size: 20.sp,
                       ),
                       onPressed: () {
                         isPasswordVisible.value = !isPasswordVisible.value;
@@ -226,14 +247,15 @@ class SignUpScreen extends StatelessWidget {
                   ),
                 ),
               ),
+
               SizedBox(height: 2.h),
 
-              // Confirm Password Field
+              // Re-type Password field
               Text(
                 'Re-type Password',
                 style: TextStyle(
-                  fontSize: 12.sp,
-                  fontWeight: FontWeight.w600,
+                  fontSize: 13.sp,
+                  fontWeight: FontWeight.w500,
                   color: Colors.black87,
                 ),
               ),
@@ -242,30 +264,47 @@ class SignUpScreen extends StatelessWidget {
                 () => TextField(
                   controller: confirmPasswordController,
                   obscureText: !isConfirmPasswordVisible.value,
+                  style: TextStyle(fontSize: 13.sp),
                   decoration: InputDecoration(
                     hintText: '............',
+                    hintStyle: TextStyle(
+                      color: Colors.grey[400],
+                      letterSpacing: 3,
+                    ),
+                    filled: true,
+                    fillColor: Colors.grey[50],
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(color: Colors.grey[300]!),
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(
+                        color: Colors.grey[300]!,
+                        width: 1,
+                      ),
                     ),
                     enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(color: Colors.grey[300]!),
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(
+                        color: Colors.grey[300]!,
+                        width: 1,
+                      ),
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(color: Color(0xFF7B2CBF)),
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(
+                        color: Color(0xFF000000),
+                        width: 2,
+                      ),
                     ),
                     contentPadding: EdgeInsets.symmetric(
                       horizontal: 4.w,
-                      vertical: 2.h,
+                      vertical: 1.8.h,
                     ),
                     suffixIcon: IconButton(
                       icon: Icon(
                         isConfirmPasswordVisible.value
-                            ? Icons.visibility
-                            : Icons.visibility_off,
+                            ? Icons.visibility_outlined
+                            : Icons.visibility_off_outlined,
                         color: Colors.grey[600],
+                        size: 20.sp,
                       ),
                       onPressed: () {
                         isConfirmPasswordVisible.value =
@@ -275,6 +314,82 @@ class SignUpScreen extends StatelessWidget {
                   ),
                 ),
               ),
+
+              SizedBox(height: 2.h),
+
+              // Phone Number field
+              Text(
+                'Phone Number',
+                style: TextStyle(
+                  fontSize: 13.sp,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black87,
+                ),
+              ),
+              SizedBox(height: 1.h),
+              Row(
+                children: [
+                  Container(
+                    width: 20.w,
+                    height: 6.h,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey[300]!, width: 1),
+                      borderRadius: BorderRadius.circular(8),
+                      color: Colors.grey[50],
+                    ),
+                    child: Center(
+                      child: Text(
+                        '+91',
+                        style: TextStyle(
+                          fontSize: 13.sp,
+                          color: Colors.black87,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 3.w),
+                  Expanded(
+                    child: TextField(
+                      controller: phoneController,
+                      keyboardType: TextInputType.phone,
+                      style: TextStyle(fontSize: 13.sp),
+                      decoration: InputDecoration(
+                        hintText: 'Phone Number',
+                        hintStyle: TextStyle(color: Colors.grey[400]),
+                        filled: true,
+                        fillColor: Colors.grey[50],
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(
+                            color: Colors.grey[300]!,
+                            width: 1,
+                          ),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(
+                            color: Colors.grey[300]!,
+                            width: 1,
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(
+                            color: Color(0xFF000000),
+                            width: 2,
+                          ),
+                        ),
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 4.w,
+                          vertical: 1.8.h,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+
               SizedBox(height: 4.h),
 
               // Sign Up Button
@@ -297,7 +412,7 @@ class SignUpScreen extends StatelessWidget {
                                   email: emailController.text.trim(),
                                   password: passwordController.text,
                                   fullName: fullNameController.text,
-                                  phoneNumber: '+974${phoneController.text}',
+                                  phoneNumber: '+91${phoneController.text}',
                                 );
                               } else {
                                 Get.snackbar(
@@ -315,46 +430,31 @@ class SignUpScreen extends StatelessWidget {
                             }
                           },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFF7B2CBF),
+                      backgroundColor: Color(0xFFFF9800),
+                      foregroundColor: Colors.white,
+                      elevation: 0,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(100),
                       ),
                     ),
                     child: authController.isLoading.value
-                        ? CircularProgressIndicator(color: Colors.white)
+                        ? SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2,
+                            ),
+                          )
                         : Text(
                             'Sign Up',
                             style: TextStyle(
                               fontSize: 14.sp,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                   ),
                 ),
-              ),
-              SizedBox(height: 2.h),
-
-              // Sign In Link
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Already have an account? ',
-                    style: TextStyle(color: Colors.grey[600], fontSize: 11.sp),
-                  ),
-                  GestureDetector(
-                    onTap: () => Get.back(),
-                    child: Text(
-                      'Sign In',
-                      style: TextStyle(
-                        color: Color(0xFF7B2CBF),
-                        fontSize: 11.sp,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ],
               ),
             ],
           ),

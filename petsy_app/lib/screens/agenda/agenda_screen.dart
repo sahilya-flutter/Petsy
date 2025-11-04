@@ -1,391 +1,399 @@
-// Agenda screen
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sizer/sizer.dart';
 import 'package:intl/intl.dart';
+import 'package:sizer/sizer.dart';
+import '../../controllers/appointment_controller.dart';
 import '../../controllers/reminder_controller.dart';
 import '../../controllers/pet_controller.dart';
 
 class AgendaScreen extends StatelessWidget {
+  final AppointmentController appointmentController = Get.put(
+    AppointmentController(),
+  );
   final ReminderController reminderController = Get.put(ReminderController());
   final PetController petController = Get.find();
 
+  AgendaScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
+    final currentDate = DateTime.now();
+
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Color(0xFF7B2CBF),
+        backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Get.back(),
         ),
         title: Text(
           'Agenda',
           style: TextStyle(
-            fontSize: 18.sp,
+            color: Colors.black,
             fontWeight: FontWeight.bold,
-            color: Colors.white,
+            fontSize: 16.sp,
           ),
         ),
+        centerTitle: true,
         actions: [
           IconButton(
-            icon: Icon(Icons.add, color: Colors.white),
-            onPressed: () => _showAddReminderDialog(context),
+            icon: const Icon(Icons.menu, color: Colors.black),
+            onPressed: () {},
           ),
         ],
       ),
       body: Column(
         children: [
-          // Calendar Header
+          // 🔹 Date Header
           Container(
-            padding: EdgeInsets.all(4.w),
-            color: Color(0xFF7B2CBF).withOpacity(0.1),
+            margin: EdgeInsets.symmetric(horizontal: 4.w),
+            padding: EdgeInsets.symmetric(vertical: 1.5.h, horizontal: 4.w),
+            decoration: BoxDecoration(
+              color: const Color(0xFF00BFA6),
+              borderRadius: BorderRadius.circular(12),
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                const Icon(Icons.arrow_back_ios, color: Colors.white, size: 16),
                 Text(
-                  DateFormat('MMMM yyyy').format(DateTime.now()),
+                  DateFormat('EEEE, d MMM').format(currentDate),
                   style: TextStyle(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
+                    color: Colors.white,
+                    fontSize: 13.sp,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
-                Row(
-                  children: [
-                    IconButton(
-                      icon: Icon(Icons.chevron_left),
-                      onPressed: () {},
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.chevron_right),
-                      onPressed: () {},
-                    ),
-                  ],
+                const Icon(
+                  Icons.arrow_forward_ios,
+                  color: Colors.white,
+                  size: 16,
                 ),
               ],
             ),
           ),
+          SizedBox(height: 2.h),
 
-          // Reminders List
+          // 🔹 Agenda box
           Expanded(
-            child: Obx(() {
-              if (reminderController.isLoading.value) {
-                return Center(child: CircularProgressIndicator());
-              }
+            child: Container(
+              margin: EdgeInsets.symmetric(horizontal: 6.w),
+              padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
+              decoration: BoxDecoration(
+                color: const Color(0xFFFFD6A5),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Obx(() {
+                final allItems = <Map<String, dynamic>>[];
 
-              if (reminderController.reminders.isEmpty) {
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.alarm_off,
-                        size: 60.sp,
-                        color: Colors.grey[300],
+                for (var apt in appointmentController.appointments) {
+                  allItems.add({
+                    'time': apt['time'],
+                    'title': apt['title'],
+                    'date': apt['date'],
+                    'type': 'appointment',
+                  });
+                }
+                for (var rem in reminderController.reminders) {
+                  allItems.add({
+                    'time': rem['time'],
+                    'title': rem['title'],
+                    'date': rem['date'],
+                    'type': 'reminder',
+                  });
+                }
+
+                allItems.sort((a, b) => a['time'].compareTo(b['time']));
+
+                if (allItems.isEmpty) {
+                  return Center(
+                    child: Text(
+                      'No tasks for today',
+                      style: TextStyle(color: Colors.black54, fontSize: 12.sp),
+                    ),
+                  );
+                }
+
+                return ListView.builder(
+                  itemCount: allItems.length,
+                  itemBuilder: (context, index) {
+                    final item = allItems[index];
+                    return Padding(
+                      padding: EdgeInsets.symmetric(vertical: 1.h),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            width: 15.w,
+                            child: Text(
+                              item['time'],
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black87,
+                                fontSize: 11.sp,
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: Text(
+                              item['title'],
+                              style: TextStyle(
+                                fontSize: 11.5.sp,
+                                color: Colors.black,
+                                height: 1.3,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                      SizedBox(height: 2.h),
-                      Text(
-                        'No reminders yet',
-                        style: TextStyle(
-                          fontSize: 14.sp,
-                          color: Colors.grey[600],
-                        ),
-                      ),
-                      SizedBox(height: 1.h),
-                      ElevatedButton.icon(
-                        onPressed: () => _showAddReminderDialog(context),
-                        icon: Icon(Icons.add),
-                        label: Text('Add Reminder'),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xFF7B2CBF),
-                          foregroundColor: Colors.white,
-                        ),
-                      ),
-                    ],
-                  ),
+                    );
+                  },
                 );
-              }
-
-              return ListView.builder(
-                padding: EdgeInsets.all(4.w),
-                itemCount: reminderController.reminders.length,
-                itemBuilder: (context, index) {
-                  final reminder = reminderController.reminders[index];
-                  return _buildReminderCard(reminder);
-                },
-              );
-            }),
+              }),
+            ),
           ),
+
+          SizedBox(height: 2.h),
+
+          // 🔹 Add More Button
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 6.w),
+            child: ElevatedButton(
+              onPressed: () => _showAddDialog(context),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF00BFA6),
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                minimumSize: Size(double.infinity, 6.h),
+              ),
+              child: Text(
+                'Add more',
+                style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600),
+              ),
+            ),
+          ),
+          SizedBox(height: 2.h),
         ],
       ),
     );
   }
 
-  Widget _buildReminderCard(Map<String, dynamic> reminder) {
-    final date = DateTime.parse(reminder['date']);
-    final isCompleted = reminder['isCompleted'] == 1;
+  // 🔸 Add Dialog for Appointment / Reminder
+  void _showAddDialog(BuildContext context) {
+    final RxInt selectedTab = 0.obs;
 
-    return Card(
-      margin: EdgeInsets.only(bottom: 2.h),
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      child: Padding(
-        padding: EdgeInsets.all(4.w),
-        child: Row(
-          children: [
-            Obx(
-              () => Checkbox(
-                value: isCompleted,
-                onChanged: (value) {
-                  reminderController.toggleReminderCompletion(
-                    reminder['id'],
-                    value ?? false,
-                  );
-                },
-                activeColor: Color(0xFF7B2CBF),
+    Get.dialog(
+      Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        child: Padding(
+          padding: EdgeInsets.all(5.w),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Add to Agenda',
+                style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.bold),
               ),
-            ),
-            SizedBox(width: 2.w),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    reminder['title'],
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
-                      decoration: isCompleted
-                          ? TextDecoration.lineThrough
-                          : null,
+              SizedBox(height: 3.h),
+              Obx(
+                () => Row(
+                  children: [
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () => selectedTab.value = 0,
+                        child: Container(
+                          padding: EdgeInsets.symmetric(vertical: 1.5.h),
+                          decoration: BoxDecoration(
+                            color: selectedTab.value == 0
+                                ? const Color(0xFF00BFA6)
+                                : Colors.grey[200],
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Center(
+                            child: Text(
+                              'Appointment',
+                              style: TextStyle(
+                                color: selectedTab.value == 0
+                                    ? Colors.white
+                                    : Colors.black54,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-                  if (reminder['description'] != null &&
-                      reminder['description'].isNotEmpty) ...[
-                    SizedBox(height: 0.5.h),
-                    Text(
-                      reminder['description'],
-                      style: TextStyle(
-                        fontSize: 11.sp,
-                        color: Colors.grey[600],
+                    SizedBox(width: 3.w),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () => selectedTab.value = 1,
+                        child: Container(
+                          padding: EdgeInsets.symmetric(vertical: 1.5.h),
+                          decoration: BoxDecoration(
+                            color: selectedTab.value == 1
+                                ? const Color(0xFF00BFA6)
+                                : Colors.grey[200],
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Center(
+                            child: Text(
+                              'Reminder',
+                              style: TextStyle(
+                                color: selectedTab.value == 1
+                                    ? Colors.white
+                                    : Colors.black54,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ],
-                  SizedBox(height: 1.h),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.calendar_today,
-                        size: 12.sp,
-                        color: Colors.grey[600],
-                      ),
-                      SizedBox(width: 1.w),
-                      Text(
-                        DateFormat('dd MMM').format(date),
-                        style: TextStyle(
-                          fontSize: 10.sp,
-                          color: Colors.grey[600],
-                        ),
-                      ),
-                      SizedBox(width: 3.w),
-                      Icon(
-                        Icons.access_time,
-                        size: 12.sp,
-                        color: Colors.grey[600],
-                      ),
-                      SizedBox(width: 1.w),
-                      Text(
-                        reminder['time'],
-                        style: TextStyle(
-                          fontSize: 10.sp,
-                          color: Colors.grey[600],
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+                ),
               ),
-            ),
-            IconButton(
-              icon: Icon(Icons.delete_outline, color: Colors.red),
-              onPressed: () {
-                Get.defaultDialog(
-                  title: 'Delete Reminder',
-                  middleText: 'Are you sure?',
-                  textConfirm: 'Delete',
-                  textCancel: 'Cancel',
-                  confirmTextColor: Colors.white,
-                  onConfirm: () {
-                    reminderController.deleteReminder(reminder['id']);
-                    Get.back();
-                  },
-                );
-              },
-            ),
-          ],
+              SizedBox(height: 3.h),
+              ElevatedButton(
+                onPressed: () {
+                  Get.back();
+                  if (selectedTab.value == 0) {
+                    Get.toNamed('/appointments');
+                  } else {
+                    _showAddReminderForm(context);
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF00BFA6),
+                  foregroundColor: Colors.white,
+                  minimumSize: Size(double.infinity, 6.h),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(50),
+                  ),
+                ),
+                child: const Text('Continue'),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  void _showAddReminderDialog(BuildContext context) {
+  // 🔸 Add Reminder Form
+  void _showAddReminderForm(BuildContext context) {
     final TextEditingController titleController = TextEditingController();
-    final TextEditingController descriptionController = TextEditingController();
+    final TextEditingController descController = TextEditingController();
     final Rx<DateTime> selectedDate = DateTime.now().obs;
     final Rx<TimeOfDay> selectedTime = TimeOfDay.now().obs;
-    final Rx<int?> selectedPetId = Rx<int?>(null);
 
     Get.dialog(
       Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.all(5.w),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Add a Reminder',
-                  style: TextStyle(
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.bold,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        child: Padding(
+          padding: EdgeInsets.all(5.w),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Add Reminder',
+                style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 3.h),
+              TextField(
+                controller: titleController,
+                decoration: InputDecoration(
+                  labelText: 'Title',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-                SizedBox(height: 3.h),
-
-                // Select Pet
-                Text(
-                  'Select Pet',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 1.h),
-                Obx(
-                  () => DropdownButtonFormField<int>(
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    hint: Text('Choose a pet'),
-                    value: selectedPetId.value,
-                    items: petController.pets.map((pet) {
-                      return DropdownMenuItem<int>(
-                        value: pet['id'],
-                        child: Text(pet['name']),
-                      );
-                    }).toList(),
-                    onChanged: (value) => selectedPetId.value = value,
+              ),
+              SizedBox(height: 2.h),
+              TextField(
+                controller: descController,
+                decoration: InputDecoration(
+                  labelText: 'Description',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-                SizedBox(height: 2.h),
-
-                // Title
-                TextField(
-                  controller: titleController,
-                  decoration: InputDecoration(
-                    labelText: 'Title',
-                    hintText: 'e.g., Give medication',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 2.h),
-
-                // Description
-                TextField(
-                  controller: descriptionController,
-                  maxLines: 2,
-                  decoration: InputDecoration(
-                    labelText: 'Description (Optional)',
-                    hintText: 'Add details...',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 2.h),
-
-                // Date
-                Obx(
-                  () => ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    leading: Icon(
-                      Icons.calendar_today,
-                      color: Color(0xFF7B2CBF),
-                    ),
-                    title: Text(
-                      DateFormat('dd MMM yyyy').format(selectedDate.value),
-                    ),
-                    onTap: () async {
-                      final date = await showDatePicker(
-                        context: context,
-                        initialDate: selectedDate.value,
-                        firstDate: DateTime.now(),
-                        lastDate: DateTime.now().add(Duration(days: 365)),
-                      );
-                      if (date != null) selectedDate.value = date;
-                    },
-                  ),
-                ),
-
-                // Time
-                Obx(
-                  () => ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    leading: Icon(Icons.access_time, color: Color(0xFF7B2CBF)),
-                    title: Text(selectedTime.value.format(context)),
-                    onTap: () async {
-                      final time = await showTimePicker(
-                        context: context,
-                        initialTime: selectedTime.value,
-                      );
-                      if (time != null) selectedTime.value = time;
-                    },
-                  ),
-                ),
-                SizedBox(height: 3.h),
-
-                // Buttons
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    TextButton(
-                      onPressed: () => Get.back(),
-                      child: Text('Cancel'),
-                    ),
-                    SizedBox(width: 2.w),
-                    ElevatedButton(
-                      onPressed: () {
-                        if (titleController.text.isNotEmpty &&
-                            selectedPetId.value != null) {
-                          reminderController.addReminder(
-                            petId: selectedPetId.value!,
-                            title: titleController.text,
-                            description: descriptionController.text,
-                            date: DateFormat(
-                              'yyyy-MM-dd',
-                            ).format(selectedDate.value),
-                            time: selectedTime.value.format(context),
+              ),
+              SizedBox(height: 2.h),
+              Row(
+                children: [
+                  Expanded(
+                    child: Obx(
+                      () => ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        leading: const Icon(Icons.calendar_today),
+                        title: Text(
+                          DateFormat('dd MMM yyyy').format(selectedDate.value),
+                        ),
+                        onTap: () async {
+                          final date = await showDatePicker(
+                            context: context,
+                            initialDate: selectedDate.value,
+                            firstDate: DateTime.now(),
+                            lastDate: DateTime.now().add(
+                              const Duration(days: 365),
+                            ),
                           );
-                        } else {
-                          Get.snackbar('Error', 'Please fill required fields');
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFF7B2CBF),
-                        foregroundColor: Colors.white,
+                          if (date != null) selectedDate.value = date;
+                        },
                       ),
-                      child: Text('Add'),
                     ),
-                  ],
+                  ),
+                  Expanded(
+                    child: Obx(
+                      () => ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        leading: const Icon(Icons.access_time),
+                        title: Text(selectedTime.value.format(context)),
+                        onTap: () async {
+                          final time = await showTimePicker(
+                            context: context,
+                            initialTime: selectedTime.value,
+                          );
+                          if (time != null) selectedTime.value = time;
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 3.h),
+              Align(
+                alignment: Alignment.centerRight,
+                child: ElevatedButton(
+                  onPressed: () {
+                    if (titleController.text.isNotEmpty) {
+                      reminderController.addReminder(
+                        petId: 1,
+                        title: titleController.text,
+                        description: descController.text,
+                        date: DateFormat(
+                          'yyyy-MM-dd',
+                        ).format(selectedDate.value),
+                        time: selectedTime.value.format(context),
+                      );
+                      Get.back();
+                    } else {
+                      Get.snackbar('Error', 'Please fill all fields');
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF00BFA6),
+                    foregroundColor: Colors.white,
+                  ),
+                  child: const Text('Add'),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

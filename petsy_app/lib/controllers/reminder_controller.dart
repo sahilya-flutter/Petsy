@@ -20,7 +20,7 @@ class ReminderController extends GetxController {
   Future<void> loadReminders() async {
     try {
       isLoading.value = true;
-      final userId = authController.firebaseUser.value?.uid;
+      final userId = authController.currentUser.value?.uid;
       if (userId != null) {
         final remindersList = await _dbHelper.getReminders(userId);
         reminders.value = remindersList;
@@ -45,7 +45,7 @@ class ReminderController extends GetxController {
   }) async {
     try {
       isLoading.value = true;
-      final userId = authController.firebaseUser.value?.uid;
+      final userId = authController.currentUser.value?.uid;
 
       if (userId != null) {
         await _dbHelper.insertReminder({
@@ -88,7 +88,7 @@ class ReminderController extends GetxController {
     bool isCompleted,
   ) async {
     try {
-      await _dbHelper.updateReminder(reminderId, {
+      await _dbHelper.updateReminder(reminderId as String, {
         'isCompleted': isCompleted ? 1 : 0,
       });
       await loadReminders();
@@ -103,7 +103,7 @@ class ReminderController extends GetxController {
 
   Future<void> deleteReminder(int reminderId) async {
     try {
-      await _dbHelper.deleteReminder(reminderId);
+      await _dbHelper.deleteReminder(reminderId as String);
       Get.snackbar(
         'Success',
         'Reminder deleted successfully',

@@ -1,8 +1,7 @@
-// Appointment screen
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sizer/sizer.dart';
 import 'package:intl/intl.dart';
+import 'package:sizer/sizer.dart';
 import '../../controllers/appointment_controller.dart';
 import '../../controllers/pet_controller.dart';
 
@@ -12,243 +11,164 @@ class AppointmentScreen extends StatelessWidget {
   );
   final PetController petController = Get.find();
 
+  AppointmentScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF9FAFB),
       appBar: AppBar(
-        backgroundColor: Color(0xFF7B2CBF),
         elevation: 0,
+        backgroundColor: Colors.white,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Get.back(),
         ),
         title: Text(
-          'Appointments',
+          'Book an Appointment',
           style: TextStyle(
-            fontSize: 18.sp,
+            color: Colors.black,
+            fontSize: 16.sp,
             fontWeight: FontWeight.bold,
-            color: Colors.white,
           ),
         ),
+        centerTitle: true,
         actions: [
           IconButton(
-            icon: Icon(Icons.add, color: Colors.white),
-            onPressed: () => _showAddAppointmentDialog(context),
+            icon: const Icon(Icons.menu, color: Colors.black),
+            onPressed: () {},
           ),
         ],
       ),
-      body: Obx(() {
-        if (appointmentController.isLoading.value) {
-          return Center(child: CircularProgressIndicator());
-        }
 
-        if (appointmentController.appointments.isEmpty) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.calendar_today_outlined,
-                  size: 60.sp,
-                  color: Colors.grey[300],
-                ),
-                SizedBox(height: 2.h),
-                Text(
-                  'No appointments yet',
-                  style: TextStyle(fontSize: 14.sp, color: Colors.grey[600]),
-                ),
-                SizedBox(height: 1.h),
-                ElevatedButton.icon(
-                  onPressed: () => _showAddAppointmentDialog(context),
-                  icon: Icon(Icons.add),
-                  label: Text('Book Appointment'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF7B2CBF),
-                    foregroundColor: Colors.white,
-                  ),
-                ),
-              ],
-            ),
-          );
-        }
-
-        return ListView.builder(
-          padding: EdgeInsets.all(4.w),
-          itemCount: appointmentController.appointments.length,
-          itemBuilder: (context, index) {
-            final appointment = appointmentController.appointments[index];
-            return _buildAppointmentCard(appointment);
-          },
-        );
-      }),
-    );
-  }
-
-  Widget _buildAppointmentCard(Map<String, dynamic> appointment) {
-    final date = DateTime.parse(appointment['date']);
-    final typeColors = {
-      'Veterinary': Colors.blue,
-      'Grooming': Colors.purple,
-      'Training': Colors.orange,
-      'Other': Colors.green,
-    };
-
-    return Card(
-      margin: EdgeInsets.only(bottom: 2.h),
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      child: Padding(
-        padding: EdgeInsets.all(4.w),
+      // ✅ BODY
+      body: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Row(
-              children: [
-                Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 3.w,
-                    vertical: 0.5.h,
-                  ),
-                  decoration: BoxDecoration(
-                    color: (typeColors[appointment['type']] ?? Colors.grey)
-                        .withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    appointment['type'],
-                    style: TextStyle(
-                      fontSize: 10.sp,
-                      color: typeColors[appointment['type']] ?? Colors.grey,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                Spacer(),
-                IconButton(
-                  icon: Icon(Icons.delete_outline, color: Colors.red),
-                  onPressed: () {
-                    Get.defaultDialog(
-                      title: 'Delete Appointment',
-                      middleText: 'Are you sure?',
-                      textConfirm: 'Delete',
-                      textCancel: 'Cancel',
-                      confirmTextColor: Colors.white,
-                      onConfirm: () {
-                        appointmentController.deleteAppointment(
-                          appointment['id'],
-                        );
-                        Get.back();
-                      },
-                    );
-                  },
-                ),
-              ],
-            ),
-            SizedBox(height: 1.h),
             Text(
-              appointment['title'],
+              'WHAT WOULD YOU LIKE TO\nBOOK AN APPOINTMENT FOR?',
+              textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 14.sp,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87,
+                fontSize: 11.sp,
+                fontWeight: FontWeight.w500,
+                color: Colors.black54,
+                letterSpacing: 0.5,
               ),
             ),
-            SizedBox(height: 1.h),
-            Row(
-              children: [
-                Icon(
-                  Icons.calendar_today,
-                  size: 14.sp,
-                  color: Colors.grey[600],
-                ),
-                SizedBox(width: 2.w),
-                Text(
-                  DateFormat('dd MMM yyyy').format(date),
-                  style: TextStyle(fontSize: 11.sp, color: Colors.grey[600]),
-                ),
-                SizedBox(width: 4.w),
-                Icon(Icons.access_time, size: 14.sp, color: Colors.grey[600]),
-                SizedBox(width: 2.w),
-                Text(
-                  appointment['time'],
-                  style: TextStyle(fontSize: 11.sp, color: Colors.grey[600]),
-                ),
-              ],
+            SizedBox(height: 4.h),
+
+            // 🔹 Option Buttons vertically
+            _buildOptionCard(
+              icon: Icons.medical_services_outlined,
+              title: 'Veterinaries',
+              color: Colors.teal,
             ),
-            if (appointment['location'] != null &&
-                appointment['location'].isNotEmpty) ...[
-              SizedBox(height: 1.h),
-              Row(
-                children: [
-                  Icon(Icons.location_on, size: 14.sp, color: Colors.grey[600]),
-                  SizedBox(width: 2.w),
-                  Expanded(
-                    child: Text(
-                      appointment['location'],
-                      style: TextStyle(
-                        fontSize: 11.sp,
-                        color: Colors.grey[600],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
+            SizedBox(height: 2.h),
+            _buildOptionCard(
+              icon: Icons.people_outline,
+              title: 'Care Takers',
+              color: Colors.orange,
+            ),
+            SizedBox(height: 2.h),
+            _buildOptionCard(
+              icon: Icons.restaurant_menu,
+              title: 'Restaurants',
+              color: Colors.purple,
+            ),
+            SizedBox(height: 2.h),
+            _buildOptionCard(
+              icon: Icons.hotel_outlined,
+              title: 'Hotels',
+              color: Colors.indigo,
+            ),
           ],
         ),
       ),
     );
   }
 
-  void _showAddAppointmentDialog(BuildContext context) {
+  // 🔹 Option Card Widget
+  Widget _buildOptionCard({
+    required IconData icon,
+    required String title,
+    required Color color,
+  }) {
+    return GestureDetector(
+      onTap: () => _showBookingDialog(title, color),
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(15),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.08),
+              blurRadius: 8,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            CircleAvatar(
+              radius: 25,
+              backgroundColor: color.withOpacity(0.1),
+              child: Icon(icon, size: 28, color: color),
+            ),
+            SizedBox(width: 4.w),
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 13.sp,
+                fontWeight: FontWeight.w600,
+                color: Colors.black87,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // 🔹 Booking Dialog
+  void _showBookingDialog(String serviceType, Color themeColor) {
     final TextEditingController titleController = TextEditingController();
     final TextEditingController locationController = TextEditingController();
-    final TextEditingController notesController = TextEditingController();
-    final RxString selectedType = 'Veterinary'.obs;
     final Rx<DateTime> selectedDate = DateTime.now().obs;
     final Rx<TimeOfDay> selectedTime = TimeOfDay.now().obs;
     final Rx<int?> selectedPetId = Rx<int?>(null);
 
-    final List<String> appointmentTypes = [
-      'Veterinary',
-      'Grooming',
-      'Training',
-      'Other',
-    ];
-
     Get.dialog(
       Dialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.all(5.w),
+        child: Padding(
+          padding: EdgeInsets.all(5.w),
+          child: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Book an Appointment',
+                  'Book $serviceType Appointment',
                   style: TextStyle(
-                    fontSize: 18.sp,
+                    fontSize: 15.sp,
                     fontWeight: FontWeight.bold,
+                    color: themeColor,
                   ),
                 ),
                 SizedBox(height: 3.h),
 
-                // Select Pet
-                Text(
-                  'Select Pet',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 1.h),
+                // 🔸 Select Pet Dropdown
                 Obx(
                   () => DropdownButtonFormField<int>(
                     decoration: InputDecoration(
+                      labelText: 'Select Pet',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    hint: Text('Choose a pet'),
                     value: selectedPetId.value,
                     items: petController.pets.map((pet) {
                       return DropdownMenuItem<int>(
@@ -261,11 +181,11 @@ class AppointmentScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 2.h),
 
-                // Title
+                // 🔸 Title Field
                 TextField(
                   controller: titleController,
                   decoration: InputDecoration(
-                    labelText: 'Title',
+                    labelText: 'Appointment Title',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -273,89 +193,73 @@ class AppointmentScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 2.h),
 
-                // Type
-                Text('Type', style: TextStyle(fontWeight: FontWeight.bold)),
-                SizedBox(height: 1.h),
-                Obx(
-                  () => Wrap(
-                    spacing: 2.w,
-                    children: appointmentTypes.map((type) {
-                      return ChoiceChip(
-                        label: Text(type),
-                        selected: selectedType.value == type,
-                        onSelected: (selected) {
-                          if (selected) selectedType.value = type;
-                        },
-                        selectedColor: Color(0xFF7B2CBF),
-                        labelStyle: TextStyle(
-                          color: selectedType.value == type
-                              ? Colors.white
-                              : Colors.black,
+                // 🔸 Date and Time picker
+                Row(
+                  children: [
+                    Expanded(
+                      child: Obx(
+                        () => InkWell(
+                          onTap: () async {
+                            final picked = await showDatePicker(
+                              context: Get.context!,
+                              initialDate: selectedDate.value,
+                              firstDate: DateTime.now(),
+                              lastDate: DateTime.now().add(
+                                const Duration(days: 365),
+                              ),
+                            );
+                            if (picked != null) selectedDate.value = picked;
+                          },
+                          child: InputDecorator(
+                            decoration: InputDecoration(
+                              labelText: 'Date',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            child: Text(
+                              DateFormat(
+                                'dd MMM yyyy',
+                              ).format(selectedDate.value),
+                            ),
+                          ),
                         ),
-                      );
-                    }).toList(),
-                  ),
+                      ),
+                    ),
+                    SizedBox(width: 3.w),
+                    Expanded(
+                      child: Obx(
+                        () => InkWell(
+                          onTap: () async {
+                            final picked = await showTimePicker(
+                              context: Get.context!,
+                              initialTime: selectedTime.value,
+                            );
+                            if (picked != null) selectedTime.value = picked;
+                          },
+                          child: InputDecorator(
+                            decoration: InputDecoration(
+                              labelText: 'Time',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            child: Text(
+                              selectedTime.value.format(Get.context!),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
                 SizedBox(height: 2.h),
 
-                // Date
-                Obx(
-                  () => ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    leading: Icon(
-                      Icons.calendar_today,
-                      color: Color(0xFF7B2CBF),
-                    ),
-                    title: Text(
-                      DateFormat('dd MMM yyyy').format(selectedDate.value),
-                    ),
-                    onTap: () async {
-                      final date = await showDatePicker(
-                        context: context,
-                        initialDate: selectedDate.value,
-                        firstDate: DateTime.now(),
-                        lastDate: DateTime.now().add(Duration(days: 365)),
-                      );
-                      if (date != null) selectedDate.value = date;
-                    },
-                  ),
-                ),
-
-                // Time
-                Obx(
-                  () => ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    leading: Icon(Icons.access_time, color: Color(0xFF7B2CBF)),
-                    title: Text(selectedTime.value.format(context)),
-                    onTap: () async {
-                      final time = await showTimePicker(
-                        context: context,
-                        initialTime: selectedTime.value,
-                      );
-                      if (time != null) selectedTime.value = time;
-                    },
-                  ),
-                ),
-                SizedBox(height: 2.h),
-
-                // Location
+                // 🔸 Location
                 TextField(
                   controller: locationController,
                   decoration: InputDecoration(
-                    labelText: 'Location (Optional)',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 2.h),
-
-                // Notes
-                TextField(
-                  controller: notesController,
-                  maxLines: 3,
-                  decoration: InputDecoration(
-                    labelText: 'Notes (Optional)',
+                    labelText: 'Location',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -363,39 +267,60 @@ class AppointmentScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 3.h),
 
-                // Buttons
+                // 🔹 Buttons
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     TextButton(
                       onPressed: () => Get.back(),
-                      child: Text('Cancel'),
+                      child: const Text('Cancel'),
                     ),
                     SizedBox(width: 2.w),
                     ElevatedButton(
                       onPressed: () {
-                        if (titleController.text.isNotEmpty &&
-                            selectedPetId.value != null) {
-                          appointmentController.addAppointment(
-                            petId: selectedPetId.value!,
-                            title: titleController.text,
-                            type: selectedType.value,
-                            date: DateFormat(
-                              'yyyy-MM-dd',
-                            ).format(selectedDate.value),
-                            time: selectedTime.value.format(context),
-                            location: locationController.text,
-                            notes: notesController.text,
+                        if (titleController.text.isEmpty ||
+                            selectedPetId.value == null) {
+                          Get.snackbar(
+                            'Error',
+                            'Please fill all fields',
+                            snackPosition: SnackPosition.BOTTOM,
                           );
-                        } else {
-                          Get.snackbar('Error', 'Please fill required fields');
+                          return;
                         }
+
+                        appointmentController.addAppointment(
+                          petId: selectedPetId.value!,
+                          title: titleController.text,
+                          type: serviceType,
+                          date: DateFormat(
+                            'yyyy-MM-dd',
+                          ).format(selectedDate.value),
+                          time: selectedTime.value.format(Get.context!),
+                          location: locationController.text,
+                          notes: '',
+                        );
+
+                        Get.back();
+                        Get.snackbar(
+                          'Success',
+                          '$serviceType appointment booked successfully!',
+                          snackPosition: SnackPosition.BOTTOM,
+                          backgroundColor: themeColor.withOpacity(0.8),
+                          colorText: Colors.white,
+                        );
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFF7B2CBF),
+                        backgroundColor: themeColor,
                         foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(50),
+                        ),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 6.w,
+                          vertical: 1.5.h,
+                        ),
                       ),
-                      child: Text('Book'),
+                      child: const Text('Book'),
                     ),
                   ],
                 ),

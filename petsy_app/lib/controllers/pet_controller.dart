@@ -14,7 +14,7 @@ class PetController extends GetxController {
   Future<void> loadPets() async {
     try {
       isLoading.value = true;
-      final userId = authController.firebaseUser.value?.uid;
+      final userId = authController.currentUser.value?.uid;
       if (userId != null) {
         final petsList = await _dbHelper.getPets(userId);
         pets.value = petsList;
@@ -39,7 +39,7 @@ class PetController extends GetxController {
   }) async {
     try {
       isLoading.value = true;
-      final userId = authController.firebaseUser.value?.uid;
+      final userId = authController.currentUser.value?.uid;
 
       if (userId != null) {
         await _dbHelper.insertPet({
@@ -78,7 +78,7 @@ class PetController extends GetxController {
 
   Future<void> deletePet(int petId) async {
     try {
-      await _dbHelper.deletePet(petId);
+      await _dbHelper.deletePet(petId as String);
       Get.snackbar(
         'Success',
         'Pet deleted successfully',
